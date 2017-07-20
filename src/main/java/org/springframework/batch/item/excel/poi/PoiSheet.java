@@ -95,8 +95,10 @@ public class PoiSheet implements Sheet {
                     cells.add(String.valueOf(cell.getBooleanCellValue()));
                     break;
                 case Cell.CELL_TYPE_STRING:
-                case Cell.CELL_TYPE_BLANK:
                     cells.add(cell.getStringCellValue());
+                    break;
+                case Cell.CELL_TYPE_BLANK:
+                    cells.add(null);
                     break;
                 case Cell.CELL_TYPE_FORMULA:
                     cells.add(getFormulaEvaluator().evaluate(cell).formatAsString());
