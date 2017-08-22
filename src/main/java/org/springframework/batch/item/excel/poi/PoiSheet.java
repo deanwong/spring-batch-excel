@@ -90,10 +90,7 @@ public class PoiSheet implements Sheet {
                         Date date = cell.getDateCellValue();
                         cells.add(String.valueOf(date.getTime()));
                     } else {
-                        String doubleStr = String.valueOf(cell.getNumericCellValue());
-                        if (doubleStr.contains("E")) {
-                            doubleStr = new BigDecimal(cell.getNumericCellValue()).toPlainString();
-                        }
+                        String doubleStr = new BigDecimal(cell.getNumericCellValue()).stripTrailingZeros().toPlainString();
                         cells.add(doubleStr);
                     }
                     break;
