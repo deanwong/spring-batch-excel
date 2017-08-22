@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.batch.item.excel.Sheet;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -34,14 +35,6 @@ import java.util.List;
  * @since 0.5.0
  */
 public class PoiSheet implements Sheet {
-
-    private final ThreadLocal<DecimalFormat> decimalFormatThreadLocal = new ThreadLocal<DecimalFormat>() {
-
-        @Override
-        protected DecimalFormat initialValue() {
-            return new DecimalFormat("0");
-        }
-    };
 
     private final org.apache.poi.ss.usermodel.Sheet delegate;
     private final int numberOfRows;
@@ -99,7 +92,7 @@ public class PoiSheet implements Sheet {
                     } else {
                         String doubleStr = String.valueOf(cell.getNumericCellValue());
                         if (doubleStr.contains("E")) {
-                            doubleStr = decimalFormatThreadLocal.get().format(cell.getNumericCellValue());
+                            doubleStr = new BigDecimal(cell.getNumericCellValue()).toPlainString();
                         }
                         cells.add(doubleStr);
                     }
