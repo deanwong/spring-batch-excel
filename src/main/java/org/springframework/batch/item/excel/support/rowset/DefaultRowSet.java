@@ -15,7 +15,10 @@
  */
 package org.springframework.batch.item.excel.support.rowset;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.batch.item.excel.Sheet;
+import org.springframework.util.StringUtils;
 
 import java.util.Properties;
 
@@ -51,9 +54,24 @@ public class DefaultRowSet implements RowSet {
         currentRowIndex++;
         if (currentRowIndex < sheet.getNumberOfRows()) {
             currentRow = sheet.getRow(currentRowIndex);
+            if (isRowEmpty(currentRow)) {
+                return false;
+            }
             return true;
         }
         return false;
+    }
+
+    public boolean isRowEmpty(String[] row) {
+        if (row == null) {
+            return true;
+        }
+        for (int c = 0; c < row.length; c++) {
+            if (!StringUtils.isEmpty(row[c])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
