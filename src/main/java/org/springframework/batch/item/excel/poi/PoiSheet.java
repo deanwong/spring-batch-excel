@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.batch.item.excel.Sheet;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +34,14 @@ import java.util.List;
  * @since 0.5.0
  */
 public class PoiSheet implements Sheet {
+
+    private final ThreadLocal<DecimalFormat> decimalFormatThreadLocal = new ThreadLocal<DecimalFormat>() {
+
+        @Override
+        protected DecimalFormat initialValue() {
+            return new DecimalFormat("0");
+        }
+    };
 
     private final org.apache.poi.ss.usermodel.Sheet delegate;
     private final int numberOfRows;
@@ -88,7 +97,11 @@ public class PoiSheet implements Sheet {
                         Date date = cell.getDateCellValue();
                         cells.add(String.valueOf(date.getTime()));
                     } else {
-                        cells.add(String.valueOf(cell.getNumericCellValue()));
+                        String doubleStr = String.valueOf(cell.getNumericCellValue());
+                        if (doubleStr.contains("E")) {
+                            doubleStr = decimalFormatThreadLocal.get().format(cell.getNumericCellValue());
+                        }
+                        cells.add(doubleStr);
                     }
                     break;
                 case Cell.CELL_TYPE_BOOLEAN:
